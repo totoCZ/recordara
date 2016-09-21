@@ -198,7 +198,7 @@ function getNextEvent(humanReadable) {
               }
 
               if (searchStr.contains("F11")) {
-                  length = 5 * 1000 * 60; // 5min
+                  length = 2 * 1000 * 60; // 2min
 	      }
 
               if (searchStr.contains("XPA") || searchStr.contains("XPA2")) {
