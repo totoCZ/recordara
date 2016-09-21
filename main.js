@@ -178,14 +178,16 @@ function getNextEvent(humanReadable) {
               
               var length = 22 * 1000 * 60; // 22min
               var convertedTitle = urlify(nextEvents[eventId].title);
+              var freq = nextEvents[eventId].frequency;
               var hi, lo;
               
               if (searchStr.contains("LSB")) {
                 lo = -3.2;
                 hi = -0.3;
               } else if (searchStr.contains("CW")) {
-                lo = -0.95;
-                hi = -0.55;
+                //lo = -0.95;
+                //hi = -0.55;
+                freq = freq - 1.5;
               } else {
                 lo = 0.3;
                 hi = 3.2;
@@ -221,7 +223,7 @@ function getNextEvent(humanReadable) {
                 detached: true
               });
               
-              spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', nextEvents[eventId].frequency, storageDir + next.utc().format('H-mm') + '-' + convertedTitle, length, lo, hi], {
+              spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('H-mm') + '-' + convertedTitle, length, lo, hi], {
                 detached: true
               });
             
