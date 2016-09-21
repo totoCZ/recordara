@@ -182,15 +182,15 @@ function getNextEvent(humanReadable) {
               var hi, lo;
               
               if (searchStr.contains("LSB")) {
-                lo = -3.2;
-                hi = -0.3;
+                lo = -3.7;
+                hi = -0.15;
               } else if (searchStr.contains("CW")) {
-                //lo = -0.95;
-                //hi = -0.55;
-                freq = freq - 1.5;
-              } else {
                 lo = 0.3;
                 hi = 3.2;
+                freq = freq - 1.5;
+              } else {
+                lo = 0.15;
+                hi = 3.7;
               }
 
               if (searchStr.contains("F01") || searchStr.contains("F06")) {
