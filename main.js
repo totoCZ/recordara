@@ -1,82 +1,20 @@
-// calanderd 0.2
-// GNU GPL 3+
-// Written for #priyom on freenode (priyom.org) by Tomáš Hetmer.
+// recordara 0.1
+// WebSDR Automatic Recorder
+// Licensed under MIT.
 
 var config = require('./config');
-var irc = require('irc');
+var urlify = require('urlify').create();
 var moment = require('moment');
+var spawn = require('child_process').spawn;
+var fs = require('fs');
 
-var hasRoom = false;
 var hasEvents = false;
 var events = [];
 
 var schedNext;
 var schedAnnounce;
 
-var client = new irc.Client(config.server, config.botName, {
-    userName: config.userName,
-    realName: config.realName,
-    port: config.port,
-    password: config.password,
-    sasl: true,
-    showErrors: true,
-    autoConnect: false,
-    retryDelay: 4000,
-    retryCount: 1000,
-    secure: config.tls,
-});
-
-client.connect(5, function (input) {
-    console.log("[i] calanderd on server");
-
-    client.join(config.room, function (input) {
-        hasRoom = true;
-
-        console.log('[i] room connection is ready');
-
-        setInterval(function () {
-            client.send('PONG', 'empty');
-        }, 2 * 60 * 1000);
-
-        if (hasRoom && hasEvents) {
-            onReady();
-        }
-    });
-
-});
-
-client.addListener('message' + config.room, function (from, to, message) {
-
-    switch(message.args[1]) {
-        case '!next':
-        case '!n':
-            console.log('[i] received next command from ' + from);
-            cmdNext(false);
-            break;
-        case '!stream':         
-            client.say(config.room, 'To listen to the Buzzer/UZB-76 stream, click here http://stream.priyom.org:8000/buzzer.ogg.m3u');
-            break;
-        case '!help':
-            client.say(config.room, 'Available commands: !stream !listen !next');
-            break;
-        case '!listen':
-            client.say(config.room, 'To listen to the stations open the URL http://websdr.ewi.utwente.nl:8901/');
-            break;
-        case '!reload':
-            client.say(config.room, 'Reloading...');
-            
-            console.log('[i] restarting');
-            events = [];
-            break;
-        default:
-            break;
-    }
-
-});
-
-client.addListener('error', function (message) {
-    console.log('[!] error: ', message);
-});
+String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 function main() {
     console.log('[i] Asking Google for data');
@@ -128,14 +66,14 @@ function onHttpReturn(obj) {
         events.push(theEvent);
     }
 
-    if (hasRoom && hasEvents) {
+    if (hasEvents) {
         onReady();
     }
 }
 
 
 function onReady() {
-    console.log('[i] both actions succeeded, starting main system');
+    console.log('[i] starting main system');
     schedAnnounce = setTimeout(nextAnnouncement, 1);
 }
 
@@ -171,8 +109,6 @@ function cmdNext(recursion) {
         main();
         return false;
     }
-    
-    client.say(config.room, next);
 
     if (recursion) {
         var next = getNextEvent(false);
@@ -230,22 +166,68 @@ function getNextEvent(humanReadable) {
 
     if (humanReadable) {
         for (var eventId = 0; eventId < nextEvents.length; eventId++) {
-
-            if (eventId > 0) {
-                returnVal += " • ";
-            }
-
-            var next = moment(nextEvents[eventId].eventDate);
-
-            if (eventId == 0) {
-                returnVal += next.utc().format('H:mm') + " " + next.fromNow() + " ";
-            }
-
-            returnVal += nextEvents[eventId].title;
-
+        
             if (typeof nextEvents[eventId].frequency !== 'undefined' && nextEvents[eventId].frequency.length > 3) {
-                returnVal += " http://websdr.ewi.utwente.nl:8901/?tune=" + nextEvents[eventId].frequency;
+  
+              var searchStr = nextEvents[eventId].title.toUpperCase();
+              if (searchStr.contains("PACIFIC") || searchStr.contains("AMERICA")) {
+                  continue;              
+              }
+                
+              var next = moment(nextEvents[eventId].eventDate);
+              
+              var length = 22 * 1000 * 60; // 22min
+              var convertedTitle = urlify(nextEvents[eventId].title);
+              var hi, lo;
+              
+              if (searchStr.contains("LSB")) {
+                lo = -3.2;
+                hi = -0.3;
+              } else if (searchStr.contains("CW")) {
+                lo = -0.95;
+                hi = -0.55;
+              } else {
+                lo = 0.3;
+                hi = 3.2;
+              }
+
+              if (searchStr.contains("F01") || searchStr.contains("F06")) {
+                  length = 5 * 1000 * 60; // 5min
+              }
+
+              if (searchStr.contains("F11")) {
+                  length = 5 * 1000 * 60; // 5min
+	      }
+
+              if (searchStr.contains("XPA") || searchStr.contains("XPA2")) {
+                  length = 5 * 1000 * 60; // 5min
+              }
+
+              if (searchStr.contains("HM01")) {
+                  length = 25 * 1000 * 60; // 25min
+              }
+
+              if (searchStr.contains("S06S") || searchStr.contains("E17Z")) {
+                  length = 10 * 1000 * 60; // 10min
+              }
+
+	      if (searchStr.contains("E11") || searchStr.contains("E11A") || searchStr.contains("S11A")) {
+		  length = 13 * 1000 * 60; // 13min
+	      }
+
+              var storageDir = '/var/www/recordara/storage/' + next.utc().format('YYYY-MM-DD') + '/';
+
+              spawn('mkdir', ['-p', storageDir], {
+                detached: true
+              });
+              
+              spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', nextEvents[eventId].frequency, storageDir + next.utc().format('H-mm') + '-' + convertedTitle, length, lo, hi], {
+                detached: true
+              });
+            
+            
             }
+
         }
     } else {
         // here we assume that only date parsing is needed

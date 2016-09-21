@@ -1,0 +1,11 @@
+[Unit]
+Description=recordara
+Wants=network.target
+Before=network.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /opt/recordara/main.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

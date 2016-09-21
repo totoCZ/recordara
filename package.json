@@ -1,0 +1,27 @@
+{
+  "name": "recordara",
+  "version": "1.0.0",
+  "description": "WebSDR Automatic Recorder",
+  "main": "main.js",
+  "dependencies": {
+    "moment": "^2.15.0",
+    "tmp": "^0.0.29",
+    "urlify": "^0.3.6",
+    "web-audio-api": "^0.2.2",
+    "websocket": "^1.0.23"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomhetmer/recordara.git"
+  },
+  "author": "Tom Hetmer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomhetmer/recordara/issues"
+  },
+  "homepage": "https://github.com/tomhetmer/recordara#readme"
+}
