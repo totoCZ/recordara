@@ -173,10 +173,14 @@ function getNextEvent(humanReadable) {
               if (searchStr.contains("PACIFIC") || searchStr.contains("AMERICA")) {
                   continue;              
               }
+              
+              if (searchStr.contains("M08A")) {
+                  continue;
+              }
                 
               var next = moment(nextEvents[eventId].eventDate);
               
-              var length = 22 * 1000 * 60; // 22min
+              var length = 15 * 1000 * 60; // 15min
               var convertedTitle = urlify(nextEvents[eventId].title);
               var freq = nextEvents[eventId].frequency;
               var hi, lo;
@@ -216,6 +220,10 @@ function getNextEvent(humanReadable) {
 	      if (searchStr.contains("E11") || searchStr.contains("E11A") || searchStr.contains("S11A")) {
 		  length = 13 * 1000 * 60; // 13min
 	      }
+	      
+              if (searchStr.contains("M01B")) {
+                  length = 20 * 1000 * 60; // 20min
+              }
 
               var storageDir = '/var/www/recordara/storage/' + next.utc().format('YYYY-MM-DD') + '/';
 
