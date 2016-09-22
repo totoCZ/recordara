@@ -186,8 +186,8 @@ function getNextEvent(humanReadable) {
                 hi = -0.15;
               } else if (searchStr.contains("CW")) {
                 lo = 0.3;
-                hi = 3.2;
-                freq = freq - 1.5;
+                hi = 2.7;
+                freq = freq - 1;
               } else {
                 lo = 0.15;
                 hi = 3.7;
