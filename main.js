@@ -202,7 +202,7 @@ function getNextEvent(humanReadable) {
               }
 
               if (searchStr.contains("F11")) {
-                  length = 2 * 1000 * 60; // 2min
+                  length = 1 * 1000 * 60; // 1min
 	      }
 
               if (searchStr.contains("XPA") || searchStr.contains("XPA2")) {
@@ -218,7 +218,16 @@ function getNextEvent(humanReadable) {
               }
 
 	      if (searchStr.contains("E11") || searchStr.contains("E11A") || searchStr.contains("S11A")) {
-		  length = 13 * 1000 * 60; // 13min
+		  length = 11 * 1000 * 60; // 11min
+	      }
+	      
+	      // g06 can go over 20 min
+	      if (searchStr.contains("S06") || searchStr.contains("E07") || searchStr.contains("G06")) {
+		  length = 16 * 1000 * 60; // 16min
+	      }
+	      
+	      if (searchStr.contains("E07A")) {
+		  length = 10 * 1000 * 60; // 10min
 	      }
 	      
               if (searchStr.contains("M01B")) {
