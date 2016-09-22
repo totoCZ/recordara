@@ -223,7 +223,7 @@ function getNextEvent(humanReadable) {
                 detached: true
               });
               
-              spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('H-mm') + '-' + convertedTitle, length, lo, hi], {
+              spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
                 detached: true
               });
             
