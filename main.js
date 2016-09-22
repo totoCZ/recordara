@@ -229,6 +229,10 @@ function getNextEvent(humanReadable) {
 		  length = 25 * 1000 * 60; // 25min
 	      }
 	      
+              if (searchStr.contains("E07A")) {
+                  length = 10 * 1000 * 60; // 10min
+              }
+	      
               if (searchStr.contains("M01B")) {
                   length = 20 * 1000 * 60; // 20min
               }
