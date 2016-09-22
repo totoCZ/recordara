@@ -221,13 +221,12 @@ function getNextEvent(humanReadable) {
 		  length = 11 * 1000 * 60; // 11min
 	      }
 	      
-	      // g06 can go over 20 min
-	      if (searchStr.contains("S06") || searchStr.contains("E07") || searchStr.contains("G06")) {
+	      if (searchStr.contains("S06") || searchStr.contains("E07")) {
 		  length = 16 * 1000 * 60; // 16min
 	      }
 	      
-	      if (searchStr.contains("E07A")) {
-		  length = 10 * 1000 * 60; // 10min
+	      if (searchStr.contains("E06") || searchStr.contains("G06")) {
+		  length = 25 * 1000 * 60; // 25min
 	      }
 	      
               if (searchStr.contains("M01B")) {
