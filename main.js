@@ -218,7 +218,7 @@ function getNextEvent(humanReadable) {
               }
 
 	      if (searchStr.contains("E11") || searchStr.contains("E11A") || searchStr.contains("S11A")) {
-		  length = 11 * 1000 * 60; // 11min
+		  length = 13 * 1000 * 60; // 13min
 	      }
 	      
 	      if (searchStr.contains("S06") || searchStr.contains("E07")) {
