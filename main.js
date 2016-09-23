@@ -213,10 +213,6 @@ function getNextEvent(humanReadable) {
                   length = 25 * 1000 * 60; // 25min
               }
 
-              if (searchStr.contains("S06S") || searchStr.contains("E17Z")) {
-                  length = 10 * 1000 * 60; // 10min
-              }
-
 	      if (searchStr.contains("E11") || searchStr.contains("E11A") || searchStr.contains("S11A")) {
 		  length = 13 * 1000 * 60; // 13min
 	      }
@@ -236,6 +232,11 @@ function getNextEvent(humanReadable) {
               if (searchStr.contains("M01B")) {
                   length = 20 * 1000 * 60; // 20min
               }
+
+              if (searchStr.contains("S06S") || searchStr.contains("E17Z")) {
+                  length = 10 * 1000 * 60; // 10min
+              }
+
 
               var storageDir = '/var/www/recordara/storage/' + next.utc().format('YYYY-MM-DD') + '/';
 
