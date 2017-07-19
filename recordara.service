@@ -16,7 +16,7 @@ ExecStart=/usr/bin/nodejs /opt/recordara/main.js
 
 ; Limit the number of file descriptors; see `man systemd.exec` for more limit settings.
 LimitNOFILE=1048576
-; Unmodified caddy is not expected to use more than that.
+; Unmodified recordara is not expected to use more than that.
 LimitNPROC=64
 
 ; Use private /tmp and /var/tmp, which are discarded after recordara stops.
