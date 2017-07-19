@@ -1,11 +1,38 @@
 [Unit]
-Description=recordara
-Wants=network.target
-After=network.target
+Description=WebSDR Recorder
+After=network-online.target
+Wants=network-online.target
 
 [Service]
+Restart=on-failure
+StartLimitInterval=86400
+StartLimitBurst=5
+
+; User and group the process will run as.
+User=nobody
+Group=nogroup
+
 ExecStart=/usr/bin/nodejs /opt/recordara/main.js
-Restart=always
+
+; Limit the number of file descriptors; see `man systemd.exec` for more limit settings.
+LimitNOFILE=1048576
+; Unmodified caddy is not expected to use more than that.
+LimitNPROC=64
+
+; Use private /tmp and /var/tmp, which are discarded after recordara stops.
+PrivateTmp=true
+; Use a minimal /dev
+PrivateDevices=true
+; Hide /home, /root, and /run/user. Nobody will steal your SSH-keys.
+ProtectHome=true
+; Make /usr, /boot, /etc and possibly some more folders read-only.
+ProtectSystem=full
+;   This merely retains r/w access rights, it does not add any new. Must still be writable on the host!
+ReadWriteDirectories=/opt/recordara/output
+
+; The following additional security directives only work with systemd v229 or later.
+NoNewPrivileges=true
 
 [Install]
 WantedBy=multi-user.target
+
