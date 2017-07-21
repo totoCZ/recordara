@@ -1040,12 +1040,17 @@ function record_stop()
    wstream.end();
    wstream.on('finish', function () {
 
-    spawnSync('ffmpeg', ['-i', tmpName + '.wav', '-codec:a', 'libmp3lame', '-qscale:a', '8', iFilename + '.mp3'], {});
-    
+    var filename = iFilename.split("/").pop(-1);
+
+    spawnSync('sox', [tmpName + '.wav', '−−norm', tmpName + '_norm.wav'], {});
+    spawnSync('ffmpeg', ['-i', tmpName + '.wav', '-codec:a', 'libmp3lame', '-qscale:a', '9', iFilename + '.mp3'], {});
+    spawnSync('sox', [tmpName + '.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', '"recordara.hetmer.net"', '-t', filename, '-z', '70'], {});
+
     fs.unlink(tmpName + '.wav');
-     
-     process.exit();
-   
+    fs.unlink(tmpName + '_norm.wav');
+
+    process.exit();
+
   });
 }
 
