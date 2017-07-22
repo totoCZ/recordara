@@ -203,7 +203,7 @@ function getNextEvent(humanReadable) {
               }
 
               if (searchStr.contains("F01") || searchStr.contains("F06")) {
-                  length = 5 * 1000 * 60; // 5min
+                  length = 10 * 1000 * 60; // 10min
               }
 
               if (searchStr.contains("F11")) {
@@ -268,36 +268,57 @@ dos.on('close', (code) => {
 
 setTimeout(function() {
 
-filename=next.utc().format('HH-mm') + '-' + convertedTitle;
+try {
+filename=next.utc().format('YYYY-MM-DD') + '/' + next.utc().format('HH-mm') + '-' + convertedTitle;
 iFilename = storageDir + next.utc().format('HH-mm') + '-' + convertedTitle;
 
-    var duration = parseInt(spawnSync('soxi', ['-D', iFilename + '_sil.wav']).stdout.toString().split(".").slice(0,1));
-    duration = duration+10;
+    var duration_sil = parseInt(spawnSync('soxi', ['-D', iFilename + '_sil.wav']).stdout.toString().split(".").slice(0,1));
+    var duration_full = parseInt(spawnSync('soxi', ['-D', iFilename + '.wav']).stdout.toString().split(".").slice(0,1));
+    var diff = duration_full - duration_sil;
+    var duration = duration_full - diff;
+
     if (duration < 20) {
 
-    fs.unlink(iFilename + '.wav');
-    fs.unlink(iFilename + '_sil.wav');
+    fs.unlinkSync(iFilename + '.wav');
+    fs.unlinkSync(iFilename + '_sil.wav');
 
     return false;
 }
+
+    if (diff > 10) {
+      duration = duration + 10;
+    }
+
+
+    spawnSync('ffmpeg', ['-i', iFilename + '.wav', '-ss', '0', '-t', duration, '-acodec', 'copy', iFilename + '_cut.wav'], {});
 
     if (duration < 100) {
       duration = 100;
     }
 
-    spawnSync('ffmpeg', ['-i', iFilename + '.wav', '-ss', '0', '-t', duration, '-acodec', 'copy', iFilename + '_cut.wav'], {});
 
     spawnSync('sox', [iFilename + '_cut.wav', '-r', '16000', iFilename + '_r16_cut.wav'], {});
 
-    spawnSync('fdkaac', ['-p5', '-b10', '-o', iFilename + '.m4a', iFilename + '_r16_cut.wav'], {});
+    spawnSync('fdkaac', ['-p5', '-m1', '-o', iFilename + '.m4a', iFilename + '_r16_cut.wav'], {});
 
     spawnSync('sox', [iFilename + '_cut.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', 'recordara.hetmer.net', '-t', filename, '-x', duration*5, '-z', '70'], {});
 
-    fs.unlink(iFilename + '.wav');
-    fs.unlink(iFilename + '_cut.wav');
-    fs.unlink(iFilename + '_sil.wav');
-    fs.unlink(iFilename + '_r16_cut.wav');
+    fs.unlinkSync(iFilename + '.wav');
+    fs.unlinkSync(iFilename + '_cut.wav');
+    fs.unlinkSync(iFilename + '_sil.wav');
+    fs.unlinkSync(iFilename + '_r16_cut.wav');
 
+fs.appendFile('/opt/recordara/synclist', iFilename + '\n', function (err) {
+  if (err) throw err;
+  console.log('Saved!');
+});
+
+}
+catch (e) {
+  console.log("entering catch block");
+  console.log(e);
+  console.log("leaving catch block");
+}
 
 }, 600000);
 
