@@ -1040,7 +1040,7 @@ function record_stop()
    wstream.end();
    wstream.on('finish', function () {
 
-      spawnSync('sox', [tmpName + '.wav',  iFilename + '_sil.wav', 'reverse', 'silence', '1', '10.0', '0.1%', 'reverse']);
+      spawnSync('sox', [tmpName + '.wav',  iFilename + '_sil.wav', 'reverse', 'silence', '1', '5.0', '0.1%', 'reverse']);
 
 
     fs.unlink(tmpName + '.wav');
