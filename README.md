@@ -3,6 +3,15 @@ recordara
 
 WebSDR Automatic Recorder
 
+main workflow
+1. load up priyom calendar
+2. spawn a grabber process per each broadcasast
+3. grabber flushes out 2 files, one with squelch on
+4. recordara calculates probable EOF, trims the file, encodes, writes a spectrogram & hands it off to S3
+
+code quality: working PoC
+
+![recordara](06-40-XPA_14609kHz_USB.png)
 
 ### grab.js standalone
 
