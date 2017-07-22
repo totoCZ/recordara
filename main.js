@@ -6,6 +6,7 @@ var config = require('./config');
 var urlify = require('urlify').create();
 var moment = require('moment');
 var spawn = require('child_process').spawn;
+var spawnSync = require('child_process').spawnSync;
 var fs = require('fs');
 
 var hasEvents = false;
@@ -197,6 +198,10 @@ function getNextEvent(humanReadable) {
                 hi = 3.7;
               }
 
+              if (searchStr.contains("RTTY")) {
+                freq = freq - 1;
+              }
+
               if (searchStr.contains("F01") || searchStr.contains("F06")) {
                   length = 5 * 1000 * 60; // 5min
               }
@@ -211,6 +216,7 @@ function getNextEvent(humanReadable) {
 
               if (searchStr.contains("HM01")) {
                   length = 25 * 1000 * 60; // 25min
+		  continue;
               }
 
 	      if (searchStr.contains("E11") || searchStr.contains("E11A") || searchStr.contains("S11A")) {
@@ -238,15 +244,64 @@ function getNextEvent(humanReadable) {
               }
 
 
-              var storageDir = '/var/www/recordara/storage/' + next.utc().format('YYYY-MM-DD') + '/';
+              var storageDir = '/opt/recordara/output/' + next.utc().format('YYYY-MM-DD') + '/';
 
               spawn('mkdir', ['-p', storageDir], {
                 detached: true
               });
               
-              spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
+              var uno = spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
                 detached: true
               });
+
+              var dos = spawn('/usr/bin/nodejs', ['/opt/recordara/grab_finish.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
+                detached: true
+              });
+
+uno.on('close', (code) => {
+//  console.log(`child process exited with code ${code}`);
+
+});
+
+dos.on('close', (code) => {
+//  console.log(`child process exited with code ${code}`);
+
+setTimeout(function() {
+
+filename=next.utc().format('HH-mm') + '-' + convertedTitle;
+iFilename = storageDir + next.utc().format('HH-mm') + '-' + convertedTitle;
+
+    var duration = parseInt(spawnSync('soxi', ['-D', iFilename + '_sil.wav']).stdout.toString().split(".").slice(0,1));
+    duration = duration+10;
+    if (duration < 20) {
+
+    fs.unlink(iFilename + '.wav');
+    fs.unlink(iFilename + '_sil.wav');
+
+    return false;
+}
+
+    if (duration < 100) {
+      duration = 100;
+    }
+
+    spawnSync('ffmpeg', ['-i', iFilename + '.wav', '-ss', '0', '-t', duration, '-acodec', 'copy', iFilename + '_cut.wav'], {});
+
+    spawnSync('sox', [iFilename + '_cut.wav', '-r', '16000', iFilename + '_r16_cut.wav'], {});
+
+    spawnSync('fdkaac', ['-p5', '-b10', '-o', iFilename + '.m4a', iFilename + '_r16_cut.wav'], {});
+
+    spawnSync('sox', [iFilename + '_cut.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', 'recordara.hetmer.net', '-t', filename, '-x', duration*5, '-z', '70'], {});
+
+    fs.unlink(iFilename + '.wav');
+    fs.unlink(iFilename + '_cut.wav');
+    fs.unlink(iFilename + '_sil.wav');
+    fs.unlink(iFilename + '_r16_cut.wav');
+
+
+}, 600000);
+
+});
             
             
             }
