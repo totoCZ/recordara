@@ -832,7 +832,7 @@ var ct;
       //soundappletstarted();
 		setparam("f="+iFreq+"&band="+iBand+"&lo="+iLo+"&hi="+iHi+"&mode="+iMode+"&name=");
 		setparam("mute=0");
-		setparam("squelch=0");
+		setparam("squelch=1");
 		setparam("autonotch=0");
     };
     /**
@@ -1040,14 +1040,10 @@ function record_stop()
    wstream.end();
    wstream.on('finish', function () {
 
-    var filename = iFilename.split("/").pop(-1);
+      spawnSync('sox', [tmpName + '.wav',  iFilename + '_sil.wav', 'reverse', 'silence', '1', '10.0', '0.1%', 'reverse']);
 
-    spawnSync('sox', [tmpName + '.wav', '−−norm', tmpName + '_norm.wav'], {});
-    spawnSync('ffmpeg', ['-i', tmpName + '.wav', '-codec:a', 'libmp3lame', '-qscale:a', '9', iFilename + '.mp3'], {});
-    spawnSync('sox', [tmpName + '.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', '"recordara.hetmer.net"', '-t', filename, '-z', '70'], {});
 
     fs.unlink(tmpName + '.wav');
-    fs.unlink(tmpName + '_norm.wav');
 
     process.exit();
 
