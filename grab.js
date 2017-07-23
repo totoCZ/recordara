@@ -1042,9 +1042,6 @@ function record_stop()
 
       spawnSync('sox', [tmpName + '.wav',  iFilename + '_sil.wav', 'reverse', 'silence', '1', '5.0', '0.1%', 'reverse']);
 
-
-    fs.unlink(tmpName + '.wav');
-
     process.exit();
 
   });
