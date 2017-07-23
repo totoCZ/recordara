@@ -301,7 +301,7 @@ iFilename = storageDir + next.utc().format('HH-mm') + '-' + convertedTitle;
 
     spawnSync('fdkaac', ['-p5', '-m1', '-o', iFilename + '.m4a', iFilename + '_r16_cut.wav'], {});
 
-    spawnSync('sox', [iFilename + '_cut.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', 'recordara.hetmer.net', '-t', filename, '-x', duration*5, '-z', '70'], {});
+    spawnSync('sox', [iFilename + '_cut.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', 'recordara.hetmer.net', '-t', filename, '-x', duration*7, '-z', '70'], {});
 
     fs.unlinkSync(iFilename + '.wav');
     fs.unlinkSync(iFilename + '_cut.wav');
