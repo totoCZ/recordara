@@ -308,10 +308,12 @@ iFilename = storageDir + next.utc().format('HH-mm') + '-' + convertedTitle;
     fs.unlinkSync(iFilename + '_sil.wav');
     fs.unlinkSync(iFilename + '_r16_cut.wav');
 
+/*
 fs.appendFile('/opt/recordara/synclist', iFilename + '\n', function (err) {
   if (err) throw err;
   console.log('Saved!');
 });
+*/
 
 }
 catch (e) {
