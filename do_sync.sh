@@ -2,7 +2,10 @@
 
 cd /opt/recordara
 
-#aws s3 sync output s3://recordara --exclude "*.wav"
+aws s3 sync output s3://recordara --exclude "*.wav"
+
+exit 0
+
 while read p; do
 
 if [[ $p == *"/"* ]]; then
