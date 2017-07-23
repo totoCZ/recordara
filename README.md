@@ -1,6 +1,8 @@
 recordara
 =========
 
+_this is the old v0.1 of recordara - after "MECHANIZM" & "Calendario" are ready it will be replaced in the master branch_
+
 WebSDR Automatic Recorder
 
 main workflow
