@@ -322,7 +322,7 @@ catch (e) {
   console.log("leaving catch block");
 }
 
-}, 600000);
+}, 1800000);
 
 });
             
