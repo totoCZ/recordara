@@ -285,8 +285,8 @@ iFilename = storageDir + next.utc().format('HH-mm') + '-' + convertedTitle;
     return false;
 }
 
-    if (diff > 10) {
-      duration = duration + 10;
+    if (diff > 15) {
+      duration = duration + 15;
     }
 
 
