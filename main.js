@@ -297,16 +297,17 @@ iFilename = storageDir + next.utc().format('HH-mm') + '-' + convertedTitle;
     }
 
 
-    spawnSync('sox', [iFilename + '_cut.wav', '-r', '16000', iFilename + '_r16_cut.wav'], {});
+/*    spawnSync('sox', [iFilename + '_cut.wav', '-r', '16000', iFilename + '_r16_cut.wav'], {});*/
 
-    spawnSync('fdkaac', ['-p5', '-m1', '-o', iFilename + '.m4a', iFilename + '_r16_cut.wav'], {});
+/*    spawnSync('fdkaac', ['-p5', '-m1', '-o', iFilename + '.m4a', iFilename + '_r16_cut.wav'], {});*/
+    spawnSync('ffmpeg', ['-i', iFilename + '_cut.wav', '-codec:a', 'libmp3lame', '-qscale:a', '9', iFilename + '.mp3'], {});
 
     spawnSync('sox', [iFilename + '_cut.wav', '-n', 'spectrogram', '-o', iFilename + '.png', '-c', 'recordara.hetmer.net', '-t', filename, '-x', duration*7, '-z', '70'], {});
 
     fs.unlinkSync(iFilename + '.wav');
     fs.unlinkSync(iFilename + '_cut.wav');
     fs.unlinkSync(iFilename + '_sil.wav');
-    fs.unlinkSync(iFilename + '_r16_cut.wav');
+/*    fs.unlinkSync(iFilename + '_r16_cut.wav');*/
 
 /*
 fs.appendFile('/opt/recordara/synclist', iFilename + '\n', function (err) {
