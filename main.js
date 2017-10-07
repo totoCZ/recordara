@@ -250,11 +250,11 @@ function getNextEvent(humanReadable) {
                 detached: true
               });
               
-              var uno = spawn('/usr/bin/nodejs', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
+              var uno = spawn('/bin/node', ['/opt/recordara/grab.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
                 detached: true
               });
 
-              var dos = spawn('/usr/bin/nodejs', ['/opt/recordara/grab_finish.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
+              var dos = spawn('/bin/node', ['/opt/recordara/grab_finish.js', freq, storageDir + next.utc().format('HH-mm') + '-' + convertedTitle, length, lo, hi], {
                 detached: true
               });
 
