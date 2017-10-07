@@ -1,5 +1,5 @@
 [Unit]
-Description=Runs recordara-sync every hour
+Description=Runs recordara-sync on a periodic basis
 
 [Timer]
 # Time to wait after booting before we run first time
