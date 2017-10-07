@@ -1,0 +1,5 @@
+[Unit]
+Description=Recordara sync
+
+[Service]
+ExecStart=/opt/recordara/do_sync.sh
