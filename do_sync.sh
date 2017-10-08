@@ -3,7 +3,7 @@
 cd /opt/recordara
 
 aws s3 sync output s3://recordara --exclude "*.wav"
-find /opt/recordara/output/* -mmin +180 -exec rm {} \;
+find /opt/recordara/output/* -mmin +180 -exec rm -rf {} \;
 
 exit 0
 
@@ -20,4 +20,4 @@ done </opt/recordara/synclist
 
 > /opt/recordara/synclist
 
-find /opt/recordara/output/* -mmin +180 -exec rm {} \;
+find /opt/recordara/output/* -mmin +180 -exec rm -rf {} \;
